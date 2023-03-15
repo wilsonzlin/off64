@@ -1,0 +1,9 @@
+[package]
+name = "off64"
+version = "0.0.1"
+edition = "2021"
+description = "Read from and write to byte slices with u64 offsets"
+license = "Apache-2.0"
+homepage = "https://github.com/wilsonzlin/off64"
+repository = "https://github.com/wilsonzlin/off64.git"
+authors = ["Wilson Lin <code@wilsonl.in>"]
