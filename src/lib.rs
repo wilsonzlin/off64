@@ -3,6 +3,7 @@ use std::ops::Bound;
 use std::ops::RangeBounds;
 
 // A short convenient macro for converting to usize without using the unsafe `as` operator.
+#[macro_export]
 macro_rules! usz {
   ($v:expr) => {
     usize::try_from($v).unwrap()
