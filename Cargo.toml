@@ -7,3 +7,9 @@ license = "Apache-2.0"
 homepage = "https://github.com/wilsonzlin/off64"
 repository = "https://github.com/wilsonzlin/off64.git"
 authors = ["Wilson Lin <code@wilsonl.in>"]
+
+[features]
+chrono = ["dep:chrono"]
+
+[dependencies]
+chrono = { version = "0.4", optional = true }
