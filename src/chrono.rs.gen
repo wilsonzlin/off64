@@ -9,7 +9,7 @@ use chrono::Utc;
 use crate::int::*;
 """
 
-mt = ManyTraits("Int", "", "Chrono")
+mt = ManyTraits("Int", "Chrono")
 
 mt.add_read_methods(lambda async_, await_: f"""
   {async_} fn read_timestamp_be_at(&'a self, offset: u64) -> DateTime<Utc> {{

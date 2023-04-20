@@ -68,7 +68,7 @@ macro_rules! u64 {
 }
 """
 
-mt = ManyTraits("", "<&'a [u8]>", "Int")
+mt = ManyTraits("", "Int")
 
 rs_create = ""
 widths = [16, 32, 64]

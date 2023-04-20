@@ -10,8 +10,8 @@ impl<'a> Off64Read<'a, &'a [u8]> for [u8] {
   }
 }
 
-impl Off64WriteMut<&[u8]> for [u8] {
-  fn write_at<'v>(&mut self, offset: u64, value: &'v [u8]) {
+impl Off64WriteMut for [u8] {
+  fn write_at(&mut self, offset: u64, value: &[u8]) {
     self[usz!(offset)..usz!(offset) + value.len()].copy_from_slice(value);
   }
 }

@@ -14,7 +14,7 @@ impl<'a> Off64Read<'a, Vec<u8>> for File {
   }
 }
 
-impl Off64Write<&[u8]> for File {
+impl Off64Write for File {
   fn write_at(&self, offset: u64, value: &[u8]) -> () {
     self.write_all_at(value, offset).unwrap();
   }

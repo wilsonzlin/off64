@@ -45,29 +45,30 @@ pub trait Off64AsyncReadChrono<'a, T: 'a + AsRef<[u8]>>: Off64AsyncReadInt<'a, T
     Utc.timestamp_millis_opt(ms).unwrap()
   }
 }
-pub trait Off64WriteChrono: for<'a> Off64WriteInt {
-  fn write_timestamp_be_at(&self, offset: u64, value: DateTime<Utc>) {
+#[async_trait::async_trait]
+pub trait Off64AsyncWriteMutChrono: Off64AsyncWriteMutInt {
+  async fn write_timestamp_be_at(&mut self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
-    self.write_i64_be_at(offset, sec);
+    self.write_i64_be_at(offset, sec).await;
   }
 
-  fn write_timestamp_millis_be_at(&self, offset: u64, value: DateTime<Utc>) {
+  async fn write_timestamp_millis_be_at(&mut self, offset: u64, value: DateTime<Utc>) {
     let ms = value.timestamp_millis();
-    self.write_i64_be_at(offset, ms);
+    self.write_i64_be_at(offset, ms).await;
   }
 
-  fn write_timestamp_le_at(&self, offset: u64, value: DateTime<Utc>) {
+  async fn write_timestamp_le_at(&mut self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
-    self.write_i64_le_at(offset, sec);
+    self.write_i64_le_at(offset, sec).await;
   }
 
-  fn write_timestamp_millis_le_at(&self, offset: u64, value: DateTime<Utc>) {
+  async fn write_timestamp_millis_le_at(&mut self, offset: u64, value: DateTime<Utc>) {
     let ms = value.timestamp_millis();
-    self.write_i64_le_at(offset, ms);
+    self.write_i64_le_at(offset, ms).await;
   }
 }
 #[async_trait::async_trait]
-pub trait Off64AsyncWriteChrono: for<'a> Off64AsyncWriteInt {
+pub trait Off64AsyncWriteChrono: Off64AsyncWriteInt {
   async fn write_timestamp_be_at(&self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
     self.write_i64_be_at(offset, sec).await;
@@ -88,7 +89,7 @@ pub trait Off64AsyncWriteChrono: for<'a> Off64AsyncWriteInt {
     self.write_i64_le_at(offset, ms).await;
   }
 }
-pub trait Off64WriteMutChrono: for<'a> Off64WriteMutInt {
+pub trait Off64WriteMutChrono: Off64WriteMutInt {
   fn write_timestamp_be_at(&mut self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
     self.write_i64_be_at(offset, sec);
@@ -109,25 +110,24 @@ pub trait Off64WriteMutChrono: for<'a> Off64WriteMutInt {
     self.write_i64_le_at(offset, ms);
   }
 }
-#[async_trait::async_trait]
-pub trait Off64AsyncWriteMutChrono: for<'a> Off64AsyncWriteMutInt {
-  async fn write_timestamp_be_at(&mut self, offset: u64, value: DateTime<Utc>) {
+pub trait Off64WriteChrono: Off64WriteInt {
+  fn write_timestamp_be_at(&self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
-    self.write_i64_be_at(offset, sec).await;
+    self.write_i64_be_at(offset, sec);
   }
 
-  async fn write_timestamp_millis_be_at(&mut self, offset: u64, value: DateTime<Utc>) {
+  fn write_timestamp_millis_be_at(&self, offset: u64, value: DateTime<Utc>) {
     let ms = value.timestamp_millis();
-    self.write_i64_be_at(offset, ms).await;
+    self.write_i64_be_at(offset, ms);
   }
 
-  async fn write_timestamp_le_at(&mut self, offset: u64, value: DateTime<Utc>) {
+  fn write_timestamp_le_at(&self, offset: u64, value: DateTime<Utc>) {
     let sec = value.timestamp();
-    self.write_i64_le_at(offset, sec).await;
+    self.write_i64_le_at(offset, sec);
   }
 
-  async fn write_timestamp_millis_le_at(&mut self, offset: u64, value: DateTime<Utc>) {
+  fn write_timestamp_millis_le_at(&self, offset: u64, value: DateTime<Utc>) {
     let ms = value.timestamp_millis();
-    self.write_i64_le_at(offset, ms).await;
+    self.write_i64_le_at(offset, ms);
   }
 }
