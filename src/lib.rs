@@ -10,6 +10,7 @@ pub mod slice;
 pub mod test;
 
 // The read trait method has a generic return type so the implementer can return borrowed (e.g. `&[u8]`) or owned (e.g. `Vec<u8>`) value depending on their requirements, and still be able to use all Off64 extension/helper traits and methods without any overhead.
+// Note that the lifetime is associated with the lifetime parameter (i.e. `T: 'a`), instead of requiring a borrow with the lifetime as the return type (i.e. `&'a T`). This allows returning both owned (with no lifetime) and borrowed (with a lifetime) values.
 
 pub trait Off64Read<'a, T: 'a + AsRef<[u8]>> {
   fn read_at(&'a self, offset: u64, len: u64) -> T;
