@@ -10,7 +10,7 @@ use chrono::Utc;
 use std::ops::Bound;
 use std::ops::RangeBounds;
 
-// Short convenient macros for converting between widths without using the unsafe `as` operator.
+// Short convenient macros for converting between int types without using the unsafe `as` operator.
 #[macro_export]
 macro_rules! isz {
   ($v:expr) => {
