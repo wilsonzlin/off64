@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+
+rs_header = """
+use crate::Off64;
+
+// Short convenient macros for converting between int types without using the unsafe `as` operator.
+#[macro_export]
+macro_rules! isz {
+  ($v:expr) => {
+    isize::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i8 {
+  ($v:expr) => {
+    i8::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i16 {
+  ($v:expr) => {
+    i16::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i32 {
+  ($v:expr) => {
+    i32::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i64 {
+  ($v:expr) => {
+    i64::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! usz {
+  ($v:expr) => {
+    usize::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u8 {
+  ($v:expr) => {
+    u8::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u16 {
+  ($v:expr) => {
+    u16::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u32 {
+  ($v:expr) => {
+    u32::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u64 {
+  ($v:expr) => {
+    u64::try_from($v).unwrap()
+  };
+}
+"""
+rs_trait = "pub trait Off64Int: Off64 {\n"
+rs_create = ""
+widths = [16, 32, 64]
+for b in [16, 24, 32, 40, 48, 56, 64]:
+  bytes = b // 8
+  if b <= 16:
+    w = 16
+  elif b <= 32:
+    w = 32
+  else:
+    w = 64
+  width_bytes = w // 8
+  for s in ['i', 'u']:
+    for e in ['b', 'l']:
+      (buf_start, buf_end) = (width_bytes - bytes, width_bytes) if e == 'b' else (0, bytes)
+      rs_trait += f"""
+        fn read_{s}{b}_{e}e_at(&self, offset: u64) -> {s}{w} {{
+          let mut buf = [0u8; {width_bytes}];
+          buf[{buf_start}..{buf_end}].copy_from_slice(
+            self.read_at(offset, {bytes}),
+          );
+          {s}{w}::from_{e}e_bytes(buf)
+        }}
+
+        fn write_{s}{b}_{e}e_at(&mut self, offset: u64, value: {s}{w}) {{
+          let buf = value.to_{e}e_bytes();
+          self.write_at(offset, &buf[{buf_start}..{buf_end}]);
+        }}
+      """
+      rs_create += f"""
+        pub fn create_{s}{b}_{e}e(value: {s}{w}) -> [u8; {bytes}] {{
+          let buf = value.to_{e}e_bytes();
+          buf[{buf_start}..{buf_end}].try_into().unwrap()
+        }}
+      """
+rs_trait += "}\n\n"
+
+with open("int.rs", "w") as f:
+  f.write(rs_header)
+  f.write(rs_trait)
+  f.write(rs_create)

@@ -1,4 +1,5 @@
-use super::*;
+use crate::int::create_u24_le;
+use crate::int::Off64Int;
 
 #[test]
 fn test_int_functions() {
