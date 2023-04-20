@@ -2,6 +2,7 @@ use async_trait::async_trait;
 
 #[cfg(feature = "chrono")]
 pub mod chrono;
+pub mod file;
 pub mod int;
 pub mod range;
 pub mod slice;
