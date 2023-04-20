@@ -10,11 +10,65 @@ use chrono::Utc;
 use std::ops::Bound;
 use std::ops::RangeBounds;
 
-// A short convenient macro for converting to usize without using the unsafe `as` operator.
+// Short convenient macros for converting between widths without using the unsafe `as` operator.
+#[macro_export]
+macro_rules! isz {
+  ($v:expr) => {
+    isize::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i8 {
+  ($v:expr) => {
+    i8::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i16 {
+  ($v:expr) => {
+    i16::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i32 {
+  ($v:expr) => {
+    i32::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! i64 {
+  ($v:expr) => {
+    i64::try_from($v).unwrap()
+  };
+}
 #[macro_export]
 macro_rules! usz {
   ($v:expr) => {
     usize::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u8 {
+  ($v:expr) => {
+    u8::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u16 {
+  ($v:expr) => {
+    u16::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u32 {
+  ($v:expr) => {
+    u32::try_from($v).unwrap()
+  };
+}
+#[macro_export]
+macro_rules! u64 {
+  ($v:expr) => {
+    u64::try_from($v).unwrap()
   };
 }
 
