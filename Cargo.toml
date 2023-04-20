@@ -1,6 +1,6 @@
 [package]
 name = "off64"
-version = "0.5.1"
+version = "0.6.0"
 edition = "2021"
 description = "Read from and write to byte slices with u64 offsets"
 license = "Apache-2.0"
