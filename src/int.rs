@@ -1,4 +1,4 @@
-use crate::Off64;
+use crate::*;
 
 // Short convenient macros for converting between int types without using the unsafe `as` operator.
 #[macro_export]
@@ -61,22 +61,632 @@ macro_rules! u64 {
     u64::try_from($v).unwrap()
   };
 }
-pub trait Off64Int: Off64 {
-  fn read_i16_be_at(&self, offset: u64) -> i16 {
+pub trait Off64ReadInt<'a, T: 'a + AsRef<[u8]>>: Off64Read<'a, T> {
+  fn read_i16_be_at(&'a self, offset: u64) -> i16 {
     let mut buf = [0u8; 2];
-    buf[0..2].copy_from_slice(self.read_at(offset, 2));
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).as_ref());
     i16::from_be_bytes(buf)
   }
 
-  fn write_i16_be_at(&mut self, offset: u64, value: i16) {
+  fn read_i16_le_at(&'a self, offset: u64) -> i16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).as_ref());
+    i16::from_le_bytes(buf)
+  }
+
+  fn read_u16_be_at(&'a self, offset: u64) -> u16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).as_ref());
+    u16::from_be_bytes(buf)
+  }
+
+  fn read_u16_le_at(&'a self, offset: u64) -> u16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).as_ref());
+    u16::from_le_bytes(buf)
+  }
+
+  fn read_i24_be_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[1..4].copy_from_slice(self.read_at(offset, 3).as_ref());
+    i32::from_be_bytes(buf)
+  }
+
+  fn read_i24_le_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..3].copy_from_slice(self.read_at(offset, 3).as_ref());
+    i32::from_le_bytes(buf)
+  }
+
+  fn read_u24_be_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[1..4].copy_from_slice(self.read_at(offset, 3).as_ref());
+    u32::from_be_bytes(buf)
+  }
+
+  fn read_u24_le_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..3].copy_from_slice(self.read_at(offset, 3).as_ref());
+    u32::from_le_bytes(buf)
+  }
+
+  fn read_i32_be_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).as_ref());
+    i32::from_be_bytes(buf)
+  }
+
+  fn read_i32_le_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).as_ref());
+    i32::from_le_bytes(buf)
+  }
+
+  fn read_u32_be_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).as_ref());
+    u32::from_be_bytes(buf)
+  }
+
+  fn read_u32_le_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).as_ref());
+    u32::from_le_bytes(buf)
+  }
+
+  fn read_i40_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[3..8].copy_from_slice(self.read_at(offset, 5).as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  fn read_i40_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..5].copy_from_slice(self.read_at(offset, 5).as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  fn read_u40_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[3..8].copy_from_slice(self.read_at(offset, 5).as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  fn read_u40_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..5].copy_from_slice(self.read_at(offset, 5).as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  fn read_i48_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[2..8].copy_from_slice(self.read_at(offset, 6).as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  fn read_i48_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..6].copy_from_slice(self.read_at(offset, 6).as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  fn read_u48_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[2..8].copy_from_slice(self.read_at(offset, 6).as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  fn read_u48_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..6].copy_from_slice(self.read_at(offset, 6).as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  fn read_i56_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[1..8].copy_from_slice(self.read_at(offset, 7).as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  fn read_i56_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..7].copy_from_slice(self.read_at(offset, 7).as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  fn read_u56_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[1..8].copy_from_slice(self.read_at(offset, 7).as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  fn read_u56_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..7].copy_from_slice(self.read_at(offset, 7).as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  fn read_i64_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  fn read_i64_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  fn read_u64_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  fn read_u64_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).as_ref());
+    u64::from_le_bytes(buf)
+  }
+}
+#[async_trait::async_trait]
+pub trait Off64AsyncReadInt<'a, T: 'a + AsRef<[u8]>>: Off64AsyncRead<'a, T> {
+  async fn read_i16_be_at(&'a self, offset: u64) -> i16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).await.as_ref());
+    i16::from_be_bytes(buf)
+  }
+
+  async fn read_i16_le_at(&'a self, offset: u64) -> i16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).await.as_ref());
+    i16::from_le_bytes(buf)
+  }
+
+  async fn read_u16_be_at(&'a self, offset: u64) -> u16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).await.as_ref());
+    u16::from_be_bytes(buf)
+  }
+
+  async fn read_u16_le_at(&'a self, offset: u64) -> u16 {
+    let mut buf = [0u8; 2];
+    buf[0..2].copy_from_slice(self.read_at(offset, 2).await.as_ref());
+    u16::from_le_bytes(buf)
+  }
+
+  async fn read_i24_be_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[1..4].copy_from_slice(self.read_at(offset, 3).await.as_ref());
+    i32::from_be_bytes(buf)
+  }
+
+  async fn read_i24_le_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..3].copy_from_slice(self.read_at(offset, 3).await.as_ref());
+    i32::from_le_bytes(buf)
+  }
+
+  async fn read_u24_be_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[1..4].copy_from_slice(self.read_at(offset, 3).await.as_ref());
+    u32::from_be_bytes(buf)
+  }
+
+  async fn read_u24_le_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..3].copy_from_slice(self.read_at(offset, 3).await.as_ref());
+    u32::from_le_bytes(buf)
+  }
+
+  async fn read_i32_be_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).await.as_ref());
+    i32::from_be_bytes(buf)
+  }
+
+  async fn read_i32_le_at(&'a self, offset: u64) -> i32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).await.as_ref());
+    i32::from_le_bytes(buf)
+  }
+
+  async fn read_u32_be_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).await.as_ref());
+    u32::from_be_bytes(buf)
+  }
+
+  async fn read_u32_le_at(&'a self, offset: u64) -> u32 {
+    let mut buf = [0u8; 4];
+    buf[0..4].copy_from_slice(self.read_at(offset, 4).await.as_ref());
+    u32::from_le_bytes(buf)
+  }
+
+  async fn read_i40_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[3..8].copy_from_slice(self.read_at(offset, 5).await.as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  async fn read_i40_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..5].copy_from_slice(self.read_at(offset, 5).await.as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  async fn read_u40_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[3..8].copy_from_slice(self.read_at(offset, 5).await.as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  async fn read_u40_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..5].copy_from_slice(self.read_at(offset, 5).await.as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  async fn read_i48_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[2..8].copy_from_slice(self.read_at(offset, 6).await.as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  async fn read_i48_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..6].copy_from_slice(self.read_at(offset, 6).await.as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  async fn read_u48_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[2..8].copy_from_slice(self.read_at(offset, 6).await.as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  async fn read_u48_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..6].copy_from_slice(self.read_at(offset, 6).await.as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  async fn read_i56_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[1..8].copy_from_slice(self.read_at(offset, 7).await.as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  async fn read_i56_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..7].copy_from_slice(self.read_at(offset, 7).await.as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  async fn read_u56_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[1..8].copy_from_slice(self.read_at(offset, 7).await.as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  async fn read_u56_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..7].copy_from_slice(self.read_at(offset, 7).await.as_ref());
+    u64::from_le_bytes(buf)
+  }
+
+  async fn read_i64_be_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).await.as_ref());
+    i64::from_be_bytes(buf)
+  }
+
+  async fn read_i64_le_at(&'a self, offset: u64) -> i64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).await.as_ref());
+    i64::from_le_bytes(buf)
+  }
+
+  async fn read_u64_be_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).await.as_ref());
+    u64::from_be_bytes(buf)
+  }
+
+  async fn read_u64_le_at(&'a self, offset: u64) -> u64 {
+    let mut buf = [0u8; 8];
+    buf[0..8].copy_from_slice(self.read_at(offset, 8).await.as_ref());
+    u64::from_le_bytes(buf)
+  }
+}
+pub trait Off64WriteInt: for<'a> Off64Write<&'a [u8]> {
+  fn write_i16_be_at(&self, offset: u64, value: i16) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..2]);
   }
 
-  fn read_i16_le_at(&self, offset: u64) -> i16 {
-    let mut buf = [0u8; 2];
-    buf[0..2].copy_from_slice(self.read_at(offset, 2));
-    i16::from_le_bytes(buf)
+  fn write_i16_le_at(&self, offset: u64, value: i16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]);
+  }
+
+  fn write_u16_be_at(&self, offset: u64, value: u16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]);
+  }
+
+  fn write_u16_le_at(&self, offset: u64, value: u16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]);
+  }
+
+  fn write_i24_be_at(&self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]);
+  }
+
+  fn write_i24_le_at(&self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]);
+  }
+
+  fn write_u24_be_at(&self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]);
+  }
+
+  fn write_u24_le_at(&self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]);
+  }
+
+  fn write_i32_be_at(&self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]);
+  }
+
+  fn write_i32_le_at(&self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]);
+  }
+
+  fn write_u32_be_at(&self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]);
+  }
+
+  fn write_u32_le_at(&self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]);
+  }
+
+  fn write_i40_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]);
+  }
+
+  fn write_i40_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]);
+  }
+
+  fn write_u40_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]);
+  }
+
+  fn write_u40_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]);
+  }
+
+  fn write_i48_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]);
+  }
+
+  fn write_i48_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]);
+  }
+
+  fn write_u48_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]);
+  }
+
+  fn write_u48_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]);
+  }
+
+  fn write_i56_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]);
+  }
+
+  fn write_i56_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]);
+  }
+
+  fn write_u56_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]);
+  }
+
+  fn write_u56_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]);
+  }
+
+  fn write_i64_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]);
+  }
+
+  fn write_i64_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]);
+  }
+
+  fn write_u64_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]);
+  }
+
+  fn write_u64_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]);
+  }
+}
+#[async_trait::async_trait]
+pub trait Off64AsyncWriteInt: for<'a> Off64AsyncWrite<&'a [u8]> {
+  async fn write_i16_be_at(&self, offset: u64, value: i16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_i16_le_at(&self, offset: u64, value: i16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_u16_be_at(&self, offset: u64, value: u16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_u16_le_at(&self, offset: u64, value: u16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_i24_be_at(&self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]).await;
+  }
+
+  async fn write_i24_le_at(&self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]).await;
+  }
+
+  async fn write_u24_be_at(&self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]).await;
+  }
+
+  async fn write_u24_le_at(&self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]).await;
+  }
+
+  async fn write_i32_be_at(&self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_i32_le_at(&self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_u32_be_at(&self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_u32_le_at(&self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_i40_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]).await;
+  }
+
+  async fn write_i40_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]).await;
+  }
+
+  async fn write_u40_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]).await;
+  }
+
+  async fn write_u40_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]).await;
+  }
+
+  async fn write_i48_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]).await;
+  }
+
+  async fn write_i48_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]).await;
+  }
+
+  async fn write_u48_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]).await;
+  }
+
+  async fn write_u48_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]).await;
+  }
+
+  async fn write_i56_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]).await;
+  }
+
+  async fn write_i56_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]).await;
+  }
+
+  async fn write_u56_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]).await;
+  }
+
+  async fn write_u56_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]).await;
+  }
+
+  async fn write_i64_be_at(&self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_i64_le_at(&self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_u64_be_at(&self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_u64_le_at(&self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+}
+pub trait Off64WriteMutInt: for<'a> Off64WriteMut<&'a [u8]> {
+  fn write_i16_be_at(&mut self, offset: u64, value: i16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]);
   }
 
   fn write_i16_le_at(&mut self, offset: u64, value: i16) {
@@ -84,21 +694,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..2]);
   }
 
-  fn read_u16_be_at(&self, offset: u64) -> u16 {
-    let mut buf = [0u8; 2];
-    buf[0..2].copy_from_slice(self.read_at(offset, 2));
-    u16::from_be_bytes(buf)
-  }
-
   fn write_u16_be_at(&mut self, offset: u64, value: u16) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..2]);
-  }
-
-  fn read_u16_le_at(&self, offset: u64) -> u16 {
-    let mut buf = [0u8; 2];
-    buf[0..2].copy_from_slice(self.read_at(offset, 2));
-    u16::from_le_bytes(buf)
   }
 
   fn write_u16_le_at(&mut self, offset: u64, value: u16) {
@@ -106,21 +704,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..2]);
   }
 
-  fn read_i24_be_at(&self, offset: u64) -> i32 {
-    let mut buf = [0u8; 4];
-    buf[1..4].copy_from_slice(self.read_at(offset, 3));
-    i32::from_be_bytes(buf)
-  }
-
   fn write_i24_be_at(&mut self, offset: u64, value: i32) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[1..4]);
-  }
-
-  fn read_i24_le_at(&self, offset: u64) -> i32 {
-    let mut buf = [0u8; 4];
-    buf[0..3].copy_from_slice(self.read_at(offset, 3));
-    i32::from_le_bytes(buf)
   }
 
   fn write_i24_le_at(&mut self, offset: u64, value: i32) {
@@ -128,21 +714,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..3]);
   }
 
-  fn read_u24_be_at(&self, offset: u64) -> u32 {
-    let mut buf = [0u8; 4];
-    buf[1..4].copy_from_slice(self.read_at(offset, 3));
-    u32::from_be_bytes(buf)
-  }
-
   fn write_u24_be_at(&mut self, offset: u64, value: u32) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[1..4]);
-  }
-
-  fn read_u24_le_at(&self, offset: u64) -> u32 {
-    let mut buf = [0u8; 4];
-    buf[0..3].copy_from_slice(self.read_at(offset, 3));
-    u32::from_le_bytes(buf)
   }
 
   fn write_u24_le_at(&mut self, offset: u64, value: u32) {
@@ -150,21 +724,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..3]);
   }
 
-  fn read_i32_be_at(&self, offset: u64) -> i32 {
-    let mut buf = [0u8; 4];
-    buf[0..4].copy_from_slice(self.read_at(offset, 4));
-    i32::from_be_bytes(buf)
-  }
-
   fn write_i32_be_at(&mut self, offset: u64, value: i32) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..4]);
-  }
-
-  fn read_i32_le_at(&self, offset: u64) -> i32 {
-    let mut buf = [0u8; 4];
-    buf[0..4].copy_from_slice(self.read_at(offset, 4));
-    i32::from_le_bytes(buf)
   }
 
   fn write_i32_le_at(&mut self, offset: u64, value: i32) {
@@ -172,21 +734,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..4]);
   }
 
-  fn read_u32_be_at(&self, offset: u64) -> u32 {
-    let mut buf = [0u8; 4];
-    buf[0..4].copy_from_slice(self.read_at(offset, 4));
-    u32::from_be_bytes(buf)
-  }
-
   fn write_u32_be_at(&mut self, offset: u64, value: u32) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..4]);
-  }
-
-  fn read_u32_le_at(&self, offset: u64) -> u32 {
-    let mut buf = [0u8; 4];
-    buf[0..4].copy_from_slice(self.read_at(offset, 4));
-    u32::from_le_bytes(buf)
   }
 
   fn write_u32_le_at(&mut self, offset: u64, value: u32) {
@@ -194,21 +744,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..4]);
   }
 
-  fn read_i40_be_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[3..8].copy_from_slice(self.read_at(offset, 5));
-    i64::from_be_bytes(buf)
-  }
-
   fn write_i40_be_at(&mut self, offset: u64, value: i64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[3..8]);
-  }
-
-  fn read_i40_le_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[0..5].copy_from_slice(self.read_at(offset, 5));
-    i64::from_le_bytes(buf)
   }
 
   fn write_i40_le_at(&mut self, offset: u64, value: i64) {
@@ -216,21 +754,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..5]);
   }
 
-  fn read_u40_be_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[3..8].copy_from_slice(self.read_at(offset, 5));
-    u64::from_be_bytes(buf)
-  }
-
   fn write_u40_be_at(&mut self, offset: u64, value: u64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[3..8]);
-  }
-
-  fn read_u40_le_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[0..5].copy_from_slice(self.read_at(offset, 5));
-    u64::from_le_bytes(buf)
   }
 
   fn write_u40_le_at(&mut self, offset: u64, value: u64) {
@@ -238,21 +764,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..5]);
   }
 
-  fn read_i48_be_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[2..8].copy_from_slice(self.read_at(offset, 6));
-    i64::from_be_bytes(buf)
-  }
-
   fn write_i48_be_at(&mut self, offset: u64, value: i64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[2..8]);
-  }
-
-  fn read_i48_le_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[0..6].copy_from_slice(self.read_at(offset, 6));
-    i64::from_le_bytes(buf)
   }
 
   fn write_i48_le_at(&mut self, offset: u64, value: i64) {
@@ -260,21 +774,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..6]);
   }
 
-  fn read_u48_be_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[2..8].copy_from_slice(self.read_at(offset, 6));
-    u64::from_be_bytes(buf)
-  }
-
   fn write_u48_be_at(&mut self, offset: u64, value: u64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[2..8]);
-  }
-
-  fn read_u48_le_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[0..6].copy_from_slice(self.read_at(offset, 6));
-    u64::from_le_bytes(buf)
   }
 
   fn write_u48_le_at(&mut self, offset: u64, value: u64) {
@@ -282,21 +784,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..6]);
   }
 
-  fn read_i56_be_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[1..8].copy_from_slice(self.read_at(offset, 7));
-    i64::from_be_bytes(buf)
-  }
-
   fn write_i56_be_at(&mut self, offset: u64, value: i64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[1..8]);
-  }
-
-  fn read_i56_le_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[0..7].copy_from_slice(self.read_at(offset, 7));
-    i64::from_le_bytes(buf)
   }
 
   fn write_i56_le_at(&mut self, offset: u64, value: i64) {
@@ -304,21 +794,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..7]);
   }
 
-  fn read_u56_be_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[1..8].copy_from_slice(self.read_at(offset, 7));
-    u64::from_be_bytes(buf)
-  }
-
   fn write_u56_be_at(&mut self, offset: u64, value: u64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[1..8]);
-  }
-
-  fn read_u56_le_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[0..7].copy_from_slice(self.read_at(offset, 7));
-    u64::from_le_bytes(buf)
   }
 
   fn write_u56_le_at(&mut self, offset: u64, value: u64) {
@@ -326,21 +804,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..7]);
   }
 
-  fn read_i64_be_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[0..8].copy_from_slice(self.read_at(offset, 8));
-    i64::from_be_bytes(buf)
-  }
-
   fn write_i64_be_at(&mut self, offset: u64, value: i64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..8]);
-  }
-
-  fn read_i64_le_at(&self, offset: u64) -> i64 {
-    let mut buf = [0u8; 8];
-    buf[0..8].copy_from_slice(self.read_at(offset, 8));
-    i64::from_le_bytes(buf)
   }
 
   fn write_i64_le_at(&mut self, offset: u64, value: i64) {
@@ -348,21 +814,9 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..8]);
   }
 
-  fn read_u64_be_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[0..8].copy_from_slice(self.read_at(offset, 8));
-    u64::from_be_bytes(buf)
-  }
-
   fn write_u64_be_at(&mut self, offset: u64, value: u64) {
     let buf = value.to_be_bytes();
     self.write_at(offset, &buf[0..8]);
-  }
-
-  fn read_u64_le_at(&self, offset: u64) -> u64 {
-    let mut buf = [0u8; 8];
-    buf[0..8].copy_from_slice(self.read_at(offset, 8));
-    u64::from_le_bytes(buf)
   }
 
   fn write_u64_le_at(&mut self, offset: u64, value: u64) {
@@ -370,7 +824,148 @@ pub trait Off64Int: Off64 {
     self.write_at(offset, &buf[0..8]);
   }
 }
+#[async_trait::async_trait]
+pub trait Off64AsyncWriteMutInt: for<'a> Off64AsyncWriteMut<&'a [u8]> {
+  async fn write_i16_be_at(&mut self, offset: u64, value: i16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
 
+  async fn write_i16_le_at(&mut self, offset: u64, value: i16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_u16_be_at(&mut self, offset: u64, value: u16) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_u16_le_at(&mut self, offset: u64, value: u16) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..2]).await;
+  }
+
+  async fn write_i24_be_at(&mut self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]).await;
+  }
+
+  async fn write_i24_le_at(&mut self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]).await;
+  }
+
+  async fn write_u24_be_at(&mut self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..4]).await;
+  }
+
+  async fn write_u24_le_at(&mut self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..3]).await;
+  }
+
+  async fn write_i32_be_at(&mut self, offset: u64, value: i32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_i32_le_at(&mut self, offset: u64, value: i32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_u32_be_at(&mut self, offset: u64, value: u32) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_u32_le_at(&mut self, offset: u64, value: u32) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..4]).await;
+  }
+
+  async fn write_i40_be_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]).await;
+  }
+
+  async fn write_i40_le_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]).await;
+  }
+
+  async fn write_u40_be_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[3..8]).await;
+  }
+
+  async fn write_u40_le_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..5]).await;
+  }
+
+  async fn write_i48_be_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]).await;
+  }
+
+  async fn write_i48_le_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]).await;
+  }
+
+  async fn write_u48_be_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[2..8]).await;
+  }
+
+  async fn write_u48_le_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..6]).await;
+  }
+
+  async fn write_i56_be_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]).await;
+  }
+
+  async fn write_i56_le_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]).await;
+  }
+
+  async fn write_u56_be_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[1..8]).await;
+  }
+
+  async fn write_u56_le_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..7]).await;
+  }
+
+  async fn write_i64_be_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_i64_le_at(&mut self, offset: u64, value: i64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_u64_be_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_be_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+
+  async fn write_u64_le_at(&mut self, offset: u64, value: u64) {
+    let buf = value.to_le_bytes();
+    self.write_at(offset, &buf[0..8]).await;
+  }
+}
 pub fn create_i16_be(value: i16) -> [u8; 2] {
   let buf = value.to_be_bytes();
   buf[0..2].try_into().unwrap()

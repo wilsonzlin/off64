@@ -1,3 +1,5 @@
+use async_trait::async_trait;
+
 #[cfg(feature = "chrono")]
 pub mod chrono;
 pub mod int;
@@ -6,28 +8,29 @@ pub mod slice;
 #[cfg(test)]
 pub mod test;
 
-use async_trait::async_trait;
-
-pub trait Off64 {
-  fn read_at(&self, offset: u64, len: u64) -> &[u8];
-  fn write_at<'v>(&mut self, offset: u64, value: &'v [u8]) -> ();
-}
-
-// Some types don't support reading and writing with borrowed data, like files.
-pub trait Off64Owned {
-  fn read_at(&self, offset: u64, len: u64) -> Vec<u8>;
-  fn write_at<'v>(&mut self, offset: u64, value: Vec<u8>) -> ();
+pub trait Off64Read<'a, T: 'a + AsRef<[u8]>> {
+  fn read_at(&'a self, offset: u64, len: u64) -> T;
 }
 
 #[async_trait]
-pub trait Off64Async {
-  async fn read_at(&self, offset: u64, len: u64) -> &[u8];
-  async fn write_at<'v>(&mut self, offset: u64, value: &'v [u8]) -> ();
+pub trait Off64AsyncRead<'a, T: 'a + AsRef<[u8]>> {
+  async fn read_at(&self, offset: u64, len: u64) -> T;
 }
 
-// Some types don't support reading and writing with borrowed data, like files.
+pub trait Off64Write<T: AsRef<[u8]>> {
+  fn write_at(&self, offset: u64, value: T) -> ();
+}
+
+pub trait Off64WriteMut<T: AsRef<[u8]>> {
+  fn write_at(&mut self, offset: u64, value: T) -> ();
+}
+
 #[async_trait]
-pub trait Off64AsyncOwned {
-  async fn read_at(&self, offset: u64, len: u64) -> Vec<u8>;
-  async fn write_at<'v>(&mut self, offset: u64, value: Vec<u8>) -> ();
+pub trait Off64AsyncWrite<T: AsRef<[u8]>> {
+  async fn write_at(&self, offset: u64, value: T) -> ();
+}
+
+#[async_trait]
+pub trait Off64AsyncWriteMut<T: AsRef<[u8]>> {
+  async fn write_at(&mut self, offset: u64, value: T) -> ();
 }

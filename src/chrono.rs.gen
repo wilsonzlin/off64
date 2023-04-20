@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+from _genutil import ManyTraits
+
+rust_header = """
+use chrono::DateTime;
+use chrono::TimeZone;
+use chrono::Utc;
+use crate::int::*;
+"""
+
+mt = ManyTraits("Int", "", "Chrono")
+
+mt.add_read_methods(lambda async_, await_: f"""
+  {async_} fn read_timestamp_be_at(&'a self, offset: u64) -> DateTime<Utc> {{
+    let sec = self.read_i64_be_at(offset){await_};
+    Utc.timestamp_millis_opt(sec * 1000).unwrap()
+  }}
+
+  {async_} fn read_timestamp_millis_be_at(&'a self, offset: u64) -> DateTime<Utc> {{
+    let ms = self.read_i64_be_at(offset){await_};
+    Utc.timestamp_millis_opt(ms).unwrap()
+  }}
+
+  {async_} fn read_timestamp_le_at(&'a self, offset: u64) -> DateTime<Utc> {{
+    let sec = self.read_i64_le_at(offset){await_};
+    Utc.timestamp_millis_opt(sec * 1000).unwrap()
+  }}
+
+  {async_} fn read_timestamp_millis_le_at(&'a self, offset: u64) -> DateTime<Utc> {{
+    let ms = self.read_i64_le_at(offset){await_};
+    Utc.timestamp_millis_opt(ms).unwrap()
+  }}
+""")
+
+mt.add_write_methods(lambda async_, await_, mut: f"""
+  {async_} fn write_timestamp_be_at(&{mut} self, offset: u64, value: DateTime<Utc>) {{
+    let sec = value.timestamp();
+    self.write_i64_be_at(offset, sec){await_};
+  }}
+
+  {async_} fn write_timestamp_millis_be_at(&{mut} self, offset: u64, value: DateTime<Utc>) {{
+    let ms = value.timestamp_millis();
+    self.write_i64_be_at(offset, ms){await_};
+  }}
+
+  {async_} fn write_timestamp_le_at(&{mut} self, offset: u64, value: DateTime<Utc>) {{
+    let sec = value.timestamp();
+    self.write_i64_le_at(offset, sec){await_};
+  }}
+
+  {async_} fn write_timestamp_millis_le_at(&{mut} self, offset: u64, value: DateTime<Utc>) {{
+    let ms = value.timestamp_millis();
+    self.write_i64_le_at(offset, ms){await_};
+  }}
+""")
+
+with open("chrono.rs", "w") as f:
+  f.write(rust_header)
+  f.write(mt.output())
