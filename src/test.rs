@@ -1,5 +1,6 @@
 use crate::int::create_u24_le;
-use crate::int::Off64Int;
+use crate::int::Off64ReadInt;
+use crate::int::Off64WriteMutInt;
 
 #[test]
 fn test_int_functions() {
